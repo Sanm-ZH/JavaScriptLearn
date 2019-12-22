@@ -8,7 +8,7 @@ let t = 'c'
 // true
 console.log(/c/.test(str))
 // 使用变量
-console.log(eval(`/${t}/`.test(str)))
+console.log(eval(`/${t}/`).test(str)))
 ```
 
 #### 对象创建
@@ -39,7 +39,7 @@ doc.innerHTML = doc.innerHTML.replace(reg, search => {
 })
 ```
 
-#### 选择符&原子表|原子组中的选择符
+#### 选择符&(原子表|原子组)中的选择符
 
 ```js
 // 匹配号码
