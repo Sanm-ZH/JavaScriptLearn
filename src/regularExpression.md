@@ -229,3 +229,59 @@ console.log(str3.match(/[^\d]+/g))
 ```
 
 `ps: 原子表内大多数字符是不解释的，只是当做普通的字符`
+
+> 实例
+
+```html
+<p>sanm</p>
+<h1>zh</h1>
+<h2>github</h2>
+```
+
+```js
+let body = document.body
+let reg = /<(h[1-6])[\s\S]*<\/\1>/gi
+body.innerHTML = body.innerHTML.replace(reg, '')
+```
+
+#### 原子组
+
+```js
+// 用括号括起来
+// 编号 \1 \2 从左到右取组里面的内容
+let reg = /<(h[1-6])[\s\S]*<\/\1>/gi
+
+// 校验邮箱
+let mail = document
+	.querySelector('[name="mail"]')
+	.addEventListener('keyup', function() {
+		let reg = /^[\w-]+@([\w-]+\.)+(com|org|cc|cn|net)$/i
+		console.log(reg.test(this.value))
+	})
+
+let str = `
+	<h1>sanmzh</h1>
+	<span>github</span>
+	<h2>dididi</h2>
+`
+let reg2 = /<(h[1-6])>([\s\S]+)<\/\1>/gi
+// $2 取第二个组里面的内容
+console.log(str.replace(reg2, `<p>$2</p>`))
+// 数左括号(确定下标是哪个 从1开始  p0是全部内容
+str.replace(reg2, (p0, p1, p2) => `<p>${p2}</p>`)
+
+// 嵌套分组和不记录分组
+let url = `
+https://www.github.com
+http://github.com
+`
+// ?: 不记录到组编号中
+let reg3 = /https?:\/\/((?:\w+\.)?\w+\.(?:com|cn|org))/gi
+// console.dir(url.match(reg3))
+let urls = []
+// exec遍历出匹配结果，取p1
+while ((res = reg3.exec(url))) {
+	urls.push(res[1])
+}
+console.log(urls)
+```
