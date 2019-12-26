@@ -268,7 +268,7 @@ let reg2 = /<(h[1-6])>([\s\S]+)<\/\1>/gi
 // $2 取第二个组里面的内容
 console.log(str.replace(reg2, `<p>$2</p>`))
 // 数左括号(确定下标是哪个 从1开始  p0是全部内容
-str.replace(reg2, (p0, p1, p2) => `<p>${p2}</p>`)
+str.replace(reg2, (v, p1, p2) => `<p>${p2}</p>`)
 
 // 嵌套分组和不记录分组
 let url = `
@@ -284,4 +284,116 @@ while ((res = reg3.exec(url))) {
 	urls.push(res[1])
 }
 console.log(urls)
+```
+
+> 原子组别名
+
+```js
+// ?<name> 给组命名
+let html = `
+	<a href="https://github.com">github</a>
+	<a href="http://sanm-zh.github.io">blog</a>
+`
+let reg = /<a.*?href=(['"])(?<link>.*?)\1>(?<title>.*?)<\/a>/gi
+let links = []
+for (const iter of html.matchAll(reg)) {
+	links.push(iter['groups'])
+}
+console.log(links)
+```
+
+---
+
+> 实例 禁止贪婪
+
+```html
+<main>
+	<span>123</span>
+	<span>456</span>
+	<span>789</span>
+</main>
+```
+
+```js
+const main = document.querySelector('main')
+const reg = /<span>([\s\S]+?)<\/span>/gi
+// ?
+main.innerHTML = main.innerHTML.replace(reg, (v, p1) => {
+	return `<h4 style="color: red">sanm-${p1}</h4>`
+})
+```
+
+> 实例 matchALL 全局匹配
+
+```html
+<body>
+	<h1>123</h1>
+	<h2>456</h2>
+	<h1>789</h1>
+</body>
+```
+
+```js
+const body = document.body
+const reg = /<(h[1-6])>([\s\S]+?)<\/\1>/gi
+let contents = []
+// matchAll 高版本浏览器
+const iters = body.innerHTML.matchAll(reg)
+for (const iter of iters) {
+	contents.push(iter[2])
+}
+console.table(contents)
+
+// 适配老浏览器
+String.prototype.matchALL = function(reg) {
+	let res = this.match(reg)
+	if (res) {
+		let str = this.replace(res[0], '^'.repeat(res[0].length))
+		let match = str.matchAll(reg) || []
+		return [res, ...match]
+	}
+}
+```
+
+> 实例 exec 匹配全局
+
+```js
+let str = 'www.github.com'
+let reg = /\./gi
+let result = []
+while ((res = reg.exec(str))) {
+	result.push(res)
+}
+```
+
+> 实例 字符串的一些支持正则的方法
+
+```js
+let str = 'github'
+// serach可用用正则或字符 返回下标
+console.log(str.search(/h/))
+// match 不加g只返回一个
+console.log(str.match(/h/))
+// matchAll会返回一个迭代器，结果遍历
+
+// split
+let t = '2019-12-26'
+console.log(t.split(/[-\/]/))
+```
+
+---
+
+#### \$ &的使用
+
+```js
+// 正则内是开始
+// $1 $2 组编号
+// $` 匹配前面的内容  $' 匹配后面的内容
+let str = 'left张三right'
+console.log('左', str.replace(/张三/, '$`'))
+console.log('右', str.replace(/张三/, "$'"))
+
+let str = '这是我的GitHub'
+let content = str.replace(/github/i, `<a href="sanm-zh.github.io">$&</a>`)
+console.log(content)
 ```
