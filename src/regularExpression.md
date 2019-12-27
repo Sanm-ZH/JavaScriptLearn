@@ -381,6 +381,12 @@ let t = '2019-12-26'
 console.log(t.split(/[-\/]/))
 ```
 
+> 正则的一些方法
+
+- test 返回一个布尔类型
+- exec 返回一个迭代器
+- 单次匹配和 match 类似，全局匹配会有细节
+
 ---
 
 #### \$ &的使用
@@ -396,4 +402,37 @@ console.log('右', str.replace(/张三/, "$'"))
 let str = '这是我的GitHub'
 let content = str.replace(/github/i, `<a href="sanm-zh.github.io">$&</a>`)
 console.log(content)
+```
+
+#### 断言匹配
+
+```js
+let str = 'github, 这是我的github博客'
+// ?= 后面是
+let reg = /github(?=博客)/gi
+console.log(str.replace(reg, `<a href="https://sanm-zh.github.io">$&</a>`))
+
+// ?<= 前面是
+let str2 = 'sanm123'
+let reg2 = /(?<=sanm)\d+/gi
+console.log(str2.match(reg2))
+
+// 给电话号码中间四位加上*号
+let phones = `
+	张三：13912348888
+	李四：18912348888
+`
+let reg3 = /(?<=\d{3})\d+(?=\d{4})/gi
+phones = phones.replace(reg3, v => {
+	return '*'.repeat(4)
+})
+console.log(phones)
+
+// ?! 后面不是
+let str4 = 'sanm2017github'
+let reg4 = /[a-z]+(?!\d)$/i
+console.log(str4.match(reg4))
+// ?<! 前面不是
+let reg5 = /(?<!\d+)[a-z]+/i
+console.log(str4.match(reg5))
 ```
