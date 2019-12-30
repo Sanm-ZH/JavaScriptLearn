@@ -88,3 +88,71 @@ function sum(...args) {
 }
 sum(1, 2, 3)
 ```
+
+#### 回调函数
+
+`在其他函数中调用的函数`
+
+```js
+document.getElementById('id').addEventListener('click', function() {
+	console.log('回调函数')
+})
+
+let arr = [1, 2, 3, 4]
+arr.map(function(v) {
+	return v
+})
+```
+
+#### 函数中的 this
+
+```js
+let obj = {
+	name: 'sanm',
+	getName() {
+		return this.name
+	},
+	test: function() {
+		return console.log('test')
+	}
+}
+```
+
+- 全局对象中 this 就是 window
+- 在当前对象 this 就是当前对象
+- 字面量，构造函数内部的 this 就是指当前对象，里面的函数指向的还是 window
+
+```js
+let obj2 = {
+	list: ['baidu', 'google', 'github'],
+	show: function() {
+		// 如果在map中不用箭头函数而是用function回调函数，里面的this将指向window
+		// 箭头函数会是this指向他的上一层级（父级作用域，上下文）
+		return this.list.map(v => `${v}.com`)
+	}
+}
+```
+
+#### call、apply、bind
+
+```js
+function User(name) {
+	this.name = name
+}
+let test = new User('张三')
+console.log(test)
+let test2 = { age: 27 }
+User.call(test2, '大头')
+console.log(test2)
+// call 和 apply 的区别
+// 传参不同
+// call多个参数用逗号分隔，apply多个参数放数组内
+// 第一个参数都是要改变this的对象，第二个是参数相关
+// 都会立即执行一般函数
+let arr = [1, 2, 3, 4, 5]
+console.log(Math.max(...arr))
+console.log(Math.max.apply(Math, arr))
+
+// bind 不会立即执行，生成一个新的函数和call类似
+// 有两次传参的机会
+```
